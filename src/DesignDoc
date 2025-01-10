@@ -1,0 +1,143 @@
+Game Description: Create a dungeon crawler with 10 levels
+    - Each level will feature monsters and a final boss
+    - Create a save file function to the game
+    - Create upgrades to the player weapons or abilities
+
+Entity Folder
+    Entity
+        IMPORTS:
+
+
+        VARIABLES:
+        private int x
+        private int y
+        private int speed
+        private int currHealth
+        private int maxHealth
+
+
+
+    Player
+        IMPORTS:
+        import main.GuiPanel
+        import main.KeyHandler
+        import javax.imageio.ImageIO
+        import java.awt.Graphics2D
+        import java.awt.image.BufferedImage
+        import java.io.IOException
+
+        VARIABLES:
+        private KeyHandler keyH
+        private BufferedImage {player frames}
+
+        METHODS:
+
+    Enemy
+
+Main Folder
+    GuiPanel (extends JPanel, implements Runnable)
+        IMPORTS:
+        import JPanel
+        import awx.*
+        import io.*
+        import javax.imageio.ImageIO
+        import entity.*
+
+        VARIABLES:
+        final private int ORIGINAL_TILE_SIZE
+        final private int SCALE
+        final private int TILE_SIZE
+        final private int MAX_SCREEN_COL
+        final private int MAX_SCREEN_ROW
+        final private KeyHandler KEY_H
+
+        private BufferedImage {background scenes}
+
+        private Player p
+        private ArrayList enemies
+        private Thread gameThread
+        private int fps
+
+        METHODS:
+        public GuiPanel
+            - new instance of a JPanel
+            - set dimensions for panel
+            - assign an instance of KeyHandler to panel
+            - set background color for panel
+
+        public void setValues
+            - will set values for images, characters
+
+        public void startGameThread
+            - will assign a Thread object to gameThread and start it
+
+        public void paintComponent(Graphics g)
+            - change g into Graphics2D
+            - if the game is on a level, display the background for that level
+            - display the player on the screen
+            - display every enemy in the enemies ArrayList
+            - use dispose method on Graphics2D object
+
+        public void resetGame
+            - resets Player p to new Player object
+            - resets enemies to empty ArrayList
+            - ...
+
+    GuiWindow (extends JFrame)
+        IMPORTS:
+        import JFrame
+
+        METHODS:
+        public static void main
+            - instantiate a new JFrame object
+            - set up basic functions of new frame
+            - create new instance of GuiPanel and add to frame
+            - starts the gameThread
+
+    KeyHandler (implements KeyListener)
+        IMPORTS:
+        import KeyListener
+        import KeyEvent
+
+        VARIABLES:
+        private boolean upPressed
+        private boolean downPressed
+        private boolean forwardPressed
+        private boolean backwardPressed
+        private boolean meleePressed
+        private boolean rangedPressed
+        private boolean ultPressed
+
+        METHODS:
+        public KeyHandler
+            - set all booleans to false
+
+        public void keyTyped(KeyEvent e)
+            - not needed, only for override
+
+        public void keyPressed(KeyEvent e)
+            - change booleans to true depending on event
+
+        public void keyReleased(KeyEvent e)
+            - change booleans to false depending on event
+
+        public boolean isUpPressed
+            - returns upPressed
+
+        public boolean isDownPressed
+            - returns downPressed
+
+        public boolean isForwardPressed
+            - returns forwardPressed
+
+        public boolean isBackwardPressed
+            - returns backwardPressed
+
+        public boolean isMeleePressed
+            - returns meleePressed
+
+        public boolean isRangedPressed
+            - returns rangedPressed
+
+        public boolean isUltPressed
+            - returns ultPressed
