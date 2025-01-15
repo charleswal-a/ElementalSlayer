@@ -8,11 +8,6 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class Player extends Entity {
-    private KeyHandler keyH;
-    private int framesSinceStateChange;
-    private String lastFrameState;
-
-    private BufferedImage currImg;
     private BufferedImage idle1, idle2;
     private BufferedImage run1, run2, run3;
     private BufferedImage swing1, swing2, swing3;
@@ -22,14 +17,11 @@ public class Player extends Entity {
     private int maxEnergy, currEnergy;
 
     public Player(int x, int y, int xSpeed, int ySpeed, int currHealth, int maxHealth, int maxEnergy, KeyHandler keyH) {
-        super(x, y, xSpeed, ySpeed, currHealth, maxHealth, "idle");
-        this.keyH = keyH;
-        this.framesSinceStateChange = 0;
-        this.lastFrameState = "idle";
+        super(x, y, xSpeed, ySpeed, currHealth, maxHealth, "idle", keyH, null);
         this.maxEnergy = maxEnergy;
         currEnergy = maxEnergy;
         setPlayerImages();
-        currImg = idle1;
+        setCurrImg(idle1);
     }
 
     private void setPlayerImages() {
@@ -62,13 +54,13 @@ public class Player extends Entity {
 
     public void update(int backgroundX) {
         if (!Objects.equals("dead", getState())) {
-            if (keyH.isBackwardPressed() && (backgroundX < 0)) {
+            if (getKeyH().isBackwardPressed() && (backgroundX < 0)) {
                 setState("running");
-            } else if (keyH.isForwardPressed()) {
+            } else if (getKeyH().isForwardPressed()) {
                 setState("running");
-            } else if (keyH.isMeleePressed()) {
+            } else if (getKeyH().isMeleePressed()) {
                 setState("swing");
-            } else if (keyH.isFireAbilityPressed()) {
+            } else if (getKeyH().isFireAbilityPressed()) {
                 setState("casting fire spell");
             } else {
                 setState("idle");
@@ -82,86 +74,86 @@ public class Player extends Entity {
 
     public void draw(Graphics2D g2d, int tileSize, int framesSinceFireball, int framesSinceSpikes) {
         //this will keep the swing animation going after a key is released
-        if (((Objects.equals(currImg, swing1)) || (Objects.equals(currImg, swing2)) || (Objects.equals(currImg, swing3))) && !(Objects.equals(getState(), "swing"))) {
+        if (((Objects.equals(getCurrImg(), swing1)) || (Objects.equals(getCurrImg(), swing2)) || (Objects.equals(getCurrImg(), swing3))) && !(Objects.equals(getState(), "swing"))) {
             setState("swing");
         }
-        if (((Objects.equals(currImg, fireSwing1)) || (Objects.equals(currImg, fireSwing2)) || (Objects.equals(currImg, fireSwing3)) || (Objects.equals(currImg, fireSwing4))) && !(Objects.equals(getState(), "casting fire spell"))) {
+        if (((Objects.equals(getCurrImg(), fireSwing1)) || (Objects.equals(getCurrImg(), fireSwing2)) || (Objects.equals(getCurrImg(), fireSwing3)) || (Objects.equals(getCurrImg(), fireSwing4))) && !(Objects.equals(getState(), "casting fire spell"))) {
             setState("casting fire spell");
         }
 
-        if (!(Objects.equals(getState(), lastFrameState))) {
-            framesSinceStateChange = 0;
+        if (!(Objects.equals(getState(), getLastFrameState()))) {
+            setFramesSinceStateChange(0);
         }
-        int frameMod = framesSinceStateChange % 30;
+        int frameMod = getFramesSinceStateChange() % 30;
+        setLastFrameState(getState());
 
         if (Objects.equals(getState(), "idle")) {
             if (frameMod <= 15) {
-                currImg = idle1;
+                setCurrImg(idle1);
             } else {
-                currImg = idle2;
+                setCurrImg(idle2);
             }
         }
         else if (Objects.equals(getState(), "running")) {
             if (frameMod <= 10) {
-                currImg = run1;
+                setCurrImg(run1);
             } else if (frameMod <= 20) {
-                currImg = run2;
+                setCurrImg(run2);
             } else {
-                currImg = run3;
+                setCurrImg(run3);
             }
         }
         else if (Objects.equals(getState(), "swing")) {
             if (frameMod <= 10) {
-                currImg = swing1;
+                setCurrImg(swing1);
             } else if (frameMod <= 20) {
-                currImg = swing2;
+                setCurrImg(swing2);
             } else {
-                currImg = swing3;
+                setCurrImg(swing3);
             }
 
-            if (framesSinceStateChange == 30) {
-                currImg = idle1;
+            if (getFramesSinceStateChange() == 30) {
+                setCurrImg(idle1);
                 setState("idle");
             }
         }
         else if (Objects.equals(getState(), "casting fire spell") && (framesSinceFireball < 30)) {
             if (frameMod <= 6) {
-                currImg = fireSwing1;
+                setCurrImg(fireSwing1);
             } else if (frameMod <= 15) {
-                currImg = fireSwing2;
+                setCurrImg(fireSwing2);
             } else if (frameMod <= 22) {
-                currImg = fireSwing3;
+                setCurrImg(fireSwing3);
             } else {
-                currImg = fireSwing4;
+                setCurrImg(fireSwing4);
             }
 
-            if (framesSinceStateChange == 30){
+            if (getFramesSinceStateChange() == 30){
                 setState("idle");
             }
         }
         else if (Objects.equals("dead", getState())) {
             if (frameMod <= 6) {
-                currImg = dying1;
+                setCurrImg(dying1);
             } else if (frameMod <= 15) {
-                currImg = dying2;
+                setCurrImg(dying2);
             } else if (frameMod <= 22) {
-                currImg = dying3;
+                setCurrImg(dying3);
             } else {
-                currImg = dying4;
+                setCurrImg(dying4);
             }
 
-            if (framesSinceStateChange > 29) {
-                currImg = dead;
+            if (getFramesSinceStateChange() > 29) {
+                setCurrImg(dead);
             }
         }
         else {
-            currImg = idle1;
+            setCurrImg(idle1);
         }
 
-        g2d.drawImage(currImg, getX(), getY(), tileSize, tileSize, null);
+        g2d.drawImage(getCurrImg(), getX(), getY(), tileSize, tileSize, null);
 
-        lastFrameState = getState();
-        framesSinceStateChange++;
+        setFramesSinceStateChange(getFramesSinceStateChange() + 1);
     }
 
     public int getMaxEnergy() {

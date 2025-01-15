@@ -9,21 +9,12 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class Lightning extends Entity {
-    private KeyHandler keyH;
-    private Player p;
-    private int framesSinceStateChange;
-    private String lastFrameState;
-
-    private BufferedImage currImg;
     private BufferedImage striking1, striking2, striking3, striking4, striking5, striking6;
 
     public Lightning(int x, int y, KeyHandler keyH, Player p) {
-        super(x, y, 0, 0, 10, 10, "striking");
-        this.keyH = keyH;
-        this.p = p;
-        framesSinceStateChange = 0;
+        super(x, y, 0, 0, 10, 10, "striking", keyH, p);
         setLightningImages();
-        currImg = striking1;
+        setCurrImg(striking1);
     }
 
     private void setLightningImages() {
@@ -42,44 +33,44 @@ public class Lightning extends Entity {
 
     public void update(int backgroundX) {
         int newX = getX() + getxSpeed();
-        if (keyH.isBackwardPressed() && (backgroundX < 0)) {
-            newX += p.getxSpeed();
+        if (getKeyH().isBackwardPressed() && (backgroundX < 0)) {
+            newX += getP().getxSpeed();
         }
-        else if (keyH.isForwardPressed()) {
-            newX -= p.getxSpeed();
+        else if (getKeyH().isForwardPressed()) {
+            newX -= getP().getxSpeed();
         }
         setX(newX);
 
-        if (framesSinceStateChange == 29) {
+        if (getFramesSinceStateChange() == 29) {
             setState("gone");
         }
     }
 
     public void draw(Graphics2D g2d, int tileSize) {
-        if (!(Objects.equals(getState(), lastFrameState))) {
-            framesSinceStateChange = 0;
+        if (!(Objects.equals(getState(), getLastFrameState()))) {
+            setFramesSinceStateChange(0);
         }
-        int frameMod = framesSinceStateChange % 30;
-        lastFrameState = getState();
+        int frameMod = getFramesSinceStateChange() % 30;
+        setLastFrameState(getState());
 
         if (Objects.equals("striking", getState())) {
             if (frameMod < 5) {
-                currImg = striking1;
+                setCurrImg(striking1);
             } else if (frameMod < 10) {
-                currImg = striking2;
+                setCurrImg(striking2);
             } else if (frameMod < 15) {
-                currImg = striking3;
+                setCurrImg(striking3);
             } else if (frameMod < 20) {
-                currImg = striking4;
+                setCurrImg(striking4);
             } else if (frameMod < 25) {
-                currImg = striking5;
+                setCurrImg(striking5);
             } else {
-                currImg = striking6;
+                setCurrImg(striking6);
             }
         }
 
-        g2d.drawImage(currImg, getX(), getY(), tileSize, tileSize * 4, null);
+        g2d.drawImage(getCurrImg(), getX(), getY(), tileSize, tileSize * 4, null);
 
-        framesSinceStateChange++;
+        setFramesSinceStateChange(getFramesSinceStateChange() + 1);
     }
 }

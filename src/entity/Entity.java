@@ -1,6 +1,9 @@
 package entity;
 
+import main.KeyHandler;
+
 import java.awt.*;
+import java.awt.image.BufferedImage;
 
 public class Entity {
     private int x;
@@ -10,8 +13,13 @@ public class Entity {
     private int currHealth;
     private int maxHealth;
     private String state;
+    private KeyHandler keyH;
+    private Player p;
+    private int framesSinceStateChange;
+    private String lastFrameState;
+    private BufferedImage currImg;
 
-    public Entity(int x, int y, int xSpeed, int ySpeed, int currHealth, int maxHealth, String state) {
+    public Entity(int x, int y, int xSpeed, int ySpeed, int currHealth, int maxHealth, String state, KeyHandler keyH, Player p) {
         this.x = x;
         this.y = y;
         this.xSpeed = xSpeed;
@@ -19,6 +27,10 @@ public class Entity {
         this.currHealth = currHealth;
         this.maxHealth = maxHealth;
         this.state = state;
+        this.keyH = keyH;
+        this.p = p;
+        this.lastFrameState = state;
+        framesSinceStateChange = 0;
     }
 
     public void update(int backgroundX) {
@@ -83,5 +95,37 @@ public class Entity {
 
     public void setState(String state) {
         this.state = state;
+    }
+
+    public int getFramesSinceStateChange() {
+        return framesSinceStateChange;
+    }
+
+    public void setFramesSinceStateChange(int framesSinceStateChange) {
+        this.framesSinceStateChange = framesSinceStateChange;
+    }
+
+    public String getLastFrameState() {
+        return lastFrameState;
+    }
+
+    public void setLastFrameState(String lastFrameState) {
+        this.lastFrameState = lastFrameState;
+    }
+
+    public KeyHandler getKeyH() {
+        return keyH;
+    }
+
+    public Player getP() {
+        return p;
+    }
+
+    public BufferedImage getCurrImg() {
+        return currImg;
+    }
+
+    public void setCurrImg(BufferedImage currImg) {
+        this.currImg = currImg;
     }
 }

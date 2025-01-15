@@ -9,24 +9,15 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class Fireball extends Entity {
-    private KeyHandler keyH;
-    private Player p;
-    private int framesSinceStateChange;
-    private String lastFrameState;
     private int distanceTraveled;
-
-    private BufferedImage currImg;
     private BufferedImage flying1, flying2, flying3, flying4;
     private BufferedImage impact1, impact2, impact3, impact4;
     private BufferedImage disappearing1, disappearing2, disappearing3;
 
     public Fireball(int x, int y, int xSpeed, KeyHandler keyH, Player p) {
-        super(x, y, xSpeed, 0, 10, 10, "flying");
+        super(x, y, xSpeed, 0, 10, 10, "flying", keyH, p);
         setFireballImages();
-        this.keyH = keyH;
-        this.p = p;
-        currImg = flying1;
-        this.lastFrameState = "flying";
+        setCurrImg(flying1);
         distanceTraveled = 0;
     }
 
@@ -53,75 +44,75 @@ public class Fireball extends Entity {
     public void update(int backgroundX) {
         int newX = getX() + getxSpeed();
         if (!(Objects.equals("impacting", getState()))) {
-            if (keyH.isBackwardPressed() && (backgroundX < 0)) {
-                newX += p.getxSpeed();
+            if (getKeyH().isBackwardPressed() && (backgroundX < 0)) {
+                newX += getP().getxSpeed();
             }
-            else if (keyH.isForwardPressed()) {
-                newX -= p.getxSpeed();
+            else if (getKeyH().isForwardPressed()) {
+                newX -= getP().getxSpeed();
             }
             distanceTraveled += getxSpeed();
         }
         if (distanceTraveled == 65 * getxSpeed()) {
             setState("disappearing");
-            framesSinceStateChange = 0;
+            setFramesSinceStateChange(0);
         }
         setX(newX);
     }
 
     public void draw(Graphics2D g2d, int tileSize) {
-        if (!(Objects.equals(getState(), lastFrameState))) {
-            framesSinceStateChange = 0;
+        if (!(Objects.equals(getState(), getLastFrameState()))) {
+            setFramesSinceStateChange(0);
         }
-        int frameMod = framesSinceStateChange % 30;
-        lastFrameState = getState();
+        int frameMod = getFramesSinceStateChange() % 30;
+        setLastFrameState(getState());
 
         if (Objects.equals("flying", getState())) {
             if (frameMod <= 6) {
-                currImg = flying1;
+                setCurrImg(flying1);
             } else if (frameMod <= 15) {
-                currImg = flying2;
+                setCurrImg(flying2);
             } else if (frameMod <= 22) {
-                currImg = flying3;
+                setCurrImg(flying3);
             } else {
-                currImg = flying4;
+                setCurrImg(flying4);
             }
         }
         else if (Objects.equals("impacting", getState())) {
             if (frameMod <= 6) {
-                currImg = impact1;
+                setCurrImg(impact1);
             } else if (frameMod <= 15) {
-                currImg = impact2;
+                setCurrImg(impact2);
             } else if (frameMod <= 22) {
-                currImg = impact3;
+                setCurrImg(impact3);
             } else {
-                currImg = impact4;
+                setCurrImg(impact4);
             }
 
-            if (framesSinceStateChange == 29){
+            if (getFramesSinceStateChange() == 29){
                 setState("gone");
             }
         }
         else if (Objects.equals("disappearing", getState())) {
             if (frameMod <= 10) {
-                currImg = disappearing1;
+                setCurrImg(disappearing1);
             } else if (frameMod <= 20) {
-                currImg = disappearing2;
+                setCurrImg(disappearing2);
             } else {
-                currImg = disappearing3;
+                setCurrImg(disappearing3);
             }
 
-            if (framesSinceStateChange == 29) {
+            if (getFramesSinceStateChange() == 29) {
                 setState("gone");
             }
         }
 
-        g2d.drawImage(currImg, getX(), getY(), tileSize, tileSize, null);
+        g2d.drawImage(getCurrImg(), getX(), getY(), tileSize, tileSize, null);
 
-        framesSinceStateChange++;
+        setFramesSinceStateChange(getFramesSinceStateChange() + 1);
     }
 
     public void startImpact() {
         setState("impacting");
-        framesSinceStateChange = 0;
+        setFramesSinceStateChange(0);
     }
 }
