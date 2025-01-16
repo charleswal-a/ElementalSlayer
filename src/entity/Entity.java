@@ -37,6 +37,10 @@ public class Entity {
 
     }
 
+    public void update(int backgroundX, int tileSize) {
+        // This is the update method overriden to be used for path finding
+    }
+
     public void draw(Graphics2D g2d, int tileSize) {
 
     }

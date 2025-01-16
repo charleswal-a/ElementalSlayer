@@ -81,6 +81,9 @@ public class GuiPanel extends JPanel implements Runnable {
         icicles = new ArrayList<Icicle>();
         bolts = new ArrayList<Lightning>();
 
+        Goblin g = new Goblin(700, p.getY(), 3, KEY_H, p);
+        enemies.add(g);
+
         // Resets frame counter variables
         frameCount = 0;
         framesSinceFireball = 500;
@@ -127,6 +130,10 @@ public class GuiPanel extends JPanel implements Runnable {
         }
         for (Lightning l : bolts) {
             l.draw(g2d, TILE_SIZE);
+        }
+
+        for (Entity e : enemies) {
+            e.draw(g2d, TILE_SIZE);
         }
 
         // Draws the foreground image layer
@@ -234,6 +241,9 @@ public class GuiPanel extends JPanel implements Runnable {
             }
         }
 
+        for (Entity e : enemies) {
+            e.update(background1X, TILE_SIZE);
+        }
 
         if ((frameCount % 20 == 0) && (p.getCurrEnergy() + 2 <= p.getMaxEnergy())) {
             p.setCurrEnergy(p.getCurrEnergy() + 2);
