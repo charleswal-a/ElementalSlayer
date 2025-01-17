@@ -115,7 +115,6 @@ public class Goblin extends Entity {
             } else {
                 setCurrImg(dying3);
             }
-
             if (getFramesSinceStateChange() == 50) {
                 setCurrImg(dead);
             }

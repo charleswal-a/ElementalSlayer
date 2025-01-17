@@ -81,7 +81,7 @@ public class GuiPanel extends JPanel implements Runnable {
         icicles = new ArrayList<Icicle>();
         bolts = new ArrayList<Lightning>();
 
-        Goblin g = new Goblin(700, p.getY(), 3, KEY_H, p);
+        Goblin g = new Goblin(600, p.getY(), 3, KEY_H, p);
         enemies.add(g);
 
         // Resets frame counter variables
