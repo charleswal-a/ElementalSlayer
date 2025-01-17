@@ -82,6 +82,9 @@ public class Entity {
     }
 
     public void setCurrHealth(int currHealth) {
+        if (currHealth < 0) {
+            currHealth = 0;
+        }
         this.currHealth = currHealth;
     }
 
