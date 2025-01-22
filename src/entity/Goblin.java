@@ -2,7 +2,7 @@ package entity;
 
 import main.KeyHandler;
 import javax.imageio.ImageIO;
-import java.awt.Graphics2D;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.util.Objects;
@@ -13,16 +13,16 @@ public class Goblin extends Entity {
     private BufferedImage attacking1, attacking2, attacking3;
     private BufferedImage dying1, dying2, dying3, dead;
 
-    public Goblin(int x, int y, int xSpeed, KeyHandler keyH, Player p) {
-        super(x, y, xSpeed, 0, 25, 25, "idle", keyH, p);
+    public Goblin(int x, int y, KeyHandler keyH, Player p) {
+        super(x, y, 0, 0, 50, "idle", keyH, p);
         setGoblinImages();
         setCurrImg(idle1);
     }
 
     private void setGoblinImages() {
         try {
-            idle1 = ImageIO.read(getClass().getResourceAsStream("/Enemy Sprites/Goblin Sprites/Goblin_idle_1.png"));
-            idle2 = ImageIO.read(getClass().getResourceAsStream("/Enemy Sprites/Goblin Sprites/Goblin_idle_2.png"));
+            idle1 = ImageIO.read(getClass().getResourceAsStream("/Enemy Sprites/Goblin Sprites/Goblin_Idle_1.png"));
+            idle2 = ImageIO.read(getClass().getResourceAsStream("/Enemy Sprites/Goblin Sprites/Goblin_Idle_2.png"));
 
             walking1 = ImageIO.read(getClass().getResourceAsStream("/Enemy Sprites/Goblin Sprites/Goblin_Walking_1.png"));
             walking2 = ImageIO.read(getClass().getResourceAsStream("/Enemy Sprites/Goblin Sprites/Goblin_Walking_2.png"));
@@ -43,25 +43,22 @@ public class Goblin extends Entity {
     }
 
     public void update(int backgroundX, int tileSize) {
-        int newX = getX();
-        if (getKeyH().isBackwardPressed() && (backgroundX < 0)) {
-            newX += getP().getxSpeed();
-        }
-        else if (getKeyH().isForwardPressed()) {
-            newX -= getP().getxSpeed();
-        }
+        int newX = moveCamera(backgroundX);
 
-        if (newX < getP().getX() - tileSize * 0.75) {
-            setxSpeed(3);
-            setState("walking");
-        }
-        else if (newX > getP().getX() + tileSize * 0.75) {
-            setxSpeed(-3);
-            setState("walking");
+        if (!Objects.equals(getState(), "dead") && (newX < getP().getX() + tileSize * 4)) {
+            if (newX < getP().getX() - tileSize * 0.6) {
+                setxSpeed(3);
+                setState("walking");
+            } else if (newX > getP().getX() + tileSize * 0.6) {
+                setxSpeed(-3);
+                setState("walking");
+            } else {
+                setxSpeed(0);
+                setState("attacking");
+            }
         }
         else {
             setxSpeed(0);
-            setState("attacking");
         }
 
         if (getCurrHealth() == 0) {
@@ -106,6 +103,10 @@ public class Goblin extends Entity {
             } else {
                 setCurrImg(idle1);
             }
+
+            if (frameMod == 25) {
+                getP().setCurrHealth(getP().getCurrHealth() - 15);
+            }
         }
         else if (Objects.equals(getState(), "dead")) {
             if (frameMod <= 15) {
@@ -115,12 +116,16 @@ public class Goblin extends Entity {
             } else {
                 setCurrImg(dying3);
             }
-            if (getFramesSinceStateChange() == 50) {
+            if (getFramesSinceStateChange() >= 50) {
                 setCurrImg(dead);
             }
         }
 
         g2d.drawImage(getCurrImg(), getX(), getY(), tileSize, tileSize, null);
+
+        if (!Objects.equals(getState(), "dead")) {
+            drawHealthBar(g2d, tileSize);
+        }
 
         setFramesSinceStateChange(getFramesSinceStateChange() + 1);
     }

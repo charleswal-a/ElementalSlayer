@@ -13,7 +13,7 @@ public class Icicle extends Entity {
     private BufferedImage breaking1, breaking2, breaking3, breaking4;
 
     public Icicle(int x, int y, int ySpeed, KeyHandler keyH, Player p) {
-        super(x, y, 0, ySpeed, 10, 10, "falling", keyH, p);
+        super(x, y, 0, ySpeed, 10, "falling", keyH, p);
         setIcicleImages();
         setCurrImg(falling1);;
     }

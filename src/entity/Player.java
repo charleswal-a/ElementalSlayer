@@ -16,8 +16,8 @@ public class Player extends Entity {
 
     private int maxEnergy, currEnergy;
 
-    public Player(int x, int y, int xSpeed, int ySpeed, int currHealth, int maxHealth, int maxEnergy, KeyHandler keyH) {
-        super(x, y, xSpeed, ySpeed, currHealth, maxHealth, "idle", keyH, null);
+    public Player(int x, int y, int xSpeed, int ySpeed, int maxHealth, int maxEnergy, KeyHandler keyH) {
+        super(x, y, xSpeed, ySpeed, maxHealth, "idle", keyH, null);
         this.maxEnergy = maxEnergy;
         currEnergy = maxEnergy;
         setPlayerImages();
@@ -62,7 +62,7 @@ public class Player extends Entity {
                 setState("swing");
             } else if (getKeyH().isFireAbilityPressed()) {
                 setState("casting fire spell");
-            } else {
+            } else if (getFramesSinceStateChange() > 30){
                 setState("idle");
             }
         }
@@ -115,6 +115,7 @@ public class Player extends Entity {
             if (getFramesSinceStateChange() == 30) {
                 setCurrImg(idle1);
                 setState("idle");
+                setFramesSinceStateChange(0);
             }
         }
         else if (Objects.equals(getState(), "casting fire spell") && (framesSinceFireball < 30)) {

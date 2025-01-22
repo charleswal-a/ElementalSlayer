@@ -74,15 +74,17 @@ public class GuiPanel extends JPanel implements Runnable {
 
     public void resetGame() {
         // Instantiates new player object and entity object lists to empty arraylists
-        p = new Player(100, (int) (2.75 * TILE_SIZE), 5, 0, 100, 100, 100, KEY_H);
+        p = new Player(100, (int) (2.75 * TILE_SIZE), 5, 0, 100, 100, KEY_H);
         enemies = new ArrayList<Entity>();
         fireballs = new ArrayList<Fireball>();
         spikes = new ArrayList<Spikes>();
         icicles = new ArrayList<Icicle>();
         bolts = new ArrayList<Lightning>();
 
-        Goblin g = new Goblin(600, p.getY(), 3, KEY_H, p);
+        Goblin g = new Goblin(800, p.getY(), KEY_H, p);
+        Bat b = new Bat(800, 250, KEY_H, p);
         enemies.add(g);
+        enemies.add(b);
 
         // Resets frame counter variables
         frameCount = 0;
@@ -115,6 +117,11 @@ public class GuiPanel extends JPanel implements Runnable {
         g2d.drawImage(background2, background2X, 0, TILE_SIZE * MAX_SCREEN_COL * 4, TILE_SIZE * MAX_SCREEN_ROW, null);
         g2d.drawImage(background1, background1X, 0, TILE_SIZE * MAX_SCREEN_COL * 4, TILE_SIZE * MAX_SCREEN_ROW, null);
 
+        // Draws every enemy in the enemy array list
+        for (Entity e : enemies) {
+            e.draw(g2d, TILE_SIZE);
+        }
+
         // Draws the player
         p.draw(g2d, TILE_SIZE, framesSinceFireball, framesSinceSpikes);
 
@@ -130,10 +137,6 @@ public class GuiPanel extends JPanel implements Runnable {
         }
         for (Lightning l : bolts) {
             l.draw(g2d, TILE_SIZE);
-        }
-
-        for (Entity e : enemies) {
-            e.draw(g2d, TILE_SIZE);
         }
 
         // Draws the foreground image layer
@@ -180,7 +183,6 @@ public class GuiPanel extends JPanel implements Runnable {
             background3X -= 2;
             background4X -= 1;
         }
-
         // Handles each spell that was cast if energy allows
         else if (p.getCurrEnergy() - 30 >= 0) {
             if (KEY_H.isFireAbilityPressed() && (framesSinceFireball >= 100)) {
@@ -205,6 +207,14 @@ public class GuiPanel extends JPanel implements Runnable {
                 bolts.add(new Lightning(p.getX() + 200, 0,  KEY_H, p));
                 framesSinceLightning = 0;
                 p.setCurrEnergy(p.getCurrEnergy() - 30);
+            }
+        }
+
+        if (Objects.equals(p.getState(), "swing") && p.getFramesSinceStateChange() == 20) {
+            for (Entity e : enemies) {
+                if (e.getX() <= p.getX() + TILE_SIZE * 1.25 && e.getX() >= p.getX()) {
+                    e.setCurrHealth(e.getCurrHealth() - 20);
+                }
             }
         }
 
@@ -241,8 +251,14 @@ public class GuiPanel extends JPanel implements Runnable {
             }
         }
 
-        for (Entity e : enemies) {
-            e.update(background1X, TILE_SIZE);
+        for (int i = 0; i < enemies.size(); i++) {
+            if (Objects.equals(enemies.get(i).getState(), "gone")) {
+                enemies.remove(i);
+                i--;
+            }
+            else {
+                enemies.get(i).update(background1X, TILE_SIZE);
+            }
         }
 
         if ((frameCount % 20 == 0) && (p.getCurrEnergy() + 2 <= p.getMaxEnergy())) {

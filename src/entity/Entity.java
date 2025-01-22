@@ -3,6 +3,7 @@ package entity;
 import main.KeyHandler;
 
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 
 public class Entity {
@@ -19,12 +20,12 @@ public class Entity {
     private String lastFrameState;
     private BufferedImage currImg;
 
-    public Entity(int x, int y, int xSpeed, int ySpeed, int currHealth, int maxHealth, String state, KeyHandler keyH, Player p) {
+    public Entity(int x, int y, int xSpeed, int ySpeed, int maxHealth, String state, KeyHandler keyH, Player p) {
         this.x = x;
         this.y = y;
         this.xSpeed = xSpeed;
         this.ySpeed = ySpeed;
-        this.currHealth = currHealth;
+        this.currHealth = maxHealth;
         this.maxHealth = maxHealth;
         this.state = state;
         this.keyH = keyH;
@@ -134,5 +135,23 @@ public class Entity {
 
     public void setCurrImg(BufferedImage currImg) {
         this.currImg = currImg;
+    }
+
+    public void drawHealthBar(Graphics2D g2d, int tileSize) {
+        g2d.setColor(new Color(74, 6, 20));
+        g2d.fill(new Rectangle2D.Double(x + tileSize * 0.25, y - tileSize * 0.1, tileSize * 0.5, tileSize / 24));
+        g2d.setColor(new Color(0, 91, 17));
+        g2d.fill(new Rectangle2D.Double(x + tileSize * 0.25, y - tileSize * 0.1, tileSize * 0.5 * getCurrHealth() / getMaxHealth(), tileSize / 24));
+    }
+
+    public int moveCamera(int backgroundX) {
+        int newX = x;
+        if (keyH.isBackwardPressed() && (backgroundX < 0)) {
+            newX += p.getxSpeed();
+        }
+        else if (keyH.isForwardPressed()) {
+            newX -= p.getxSpeed();
+        }
+        return newX;
     }
 }

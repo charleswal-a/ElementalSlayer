@@ -15,7 +15,7 @@ public class Fireball extends Entity {
     private BufferedImage disappearing1, disappearing2, disappearing3;
 
     public Fireball(int x, int y, int xSpeed, KeyHandler keyH, Player p) {
-        super(x, y, xSpeed, 0, 10, 10, "flying", keyH, p);
+        super(x, y, xSpeed, 0, 10, "flying", keyH, p);
         setFireballImages();
         setCurrImg(flying1);
         distanceTraveled = 0;

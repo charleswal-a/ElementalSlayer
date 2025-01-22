@@ -14,7 +14,7 @@ public class Spikes extends Entity {
     private BufferedImage disappearing1, disappearing2, disappearing3, disappearing4, disappearing5;
 
     public Spikes(int x, int y, KeyHandler keyH, Player p) {
-        super(x, y, 0, 0, 10, 10, "appearing", keyH, p);
+        super(x, y, 0, 0, 10, "appearing", keyH, p);
         setSpikesImages();
         setCurrImg(appearing1);
     }

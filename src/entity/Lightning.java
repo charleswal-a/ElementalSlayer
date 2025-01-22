@@ -12,7 +12,7 @@ public class Lightning extends Entity {
     private BufferedImage striking1, striking2, striking3, striking4, striking5, striking6;
 
     public Lightning(int x, int y, KeyHandler keyH, Player p) {
-        super(x, y, 0, 0, 10, 10, "striking", keyH, p);
+        super(x, y, 0, 0, 10, "striking", keyH, p);
         setLightningImages();
         setCurrImg(striking1);
     }
