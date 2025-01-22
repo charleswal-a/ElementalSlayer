@@ -20,6 +20,7 @@ public class Goblin extends Entity {
     }
 
     private void setGoblinImages() {
+        // Assigns all image sprite files to correct variables
         try {
             idle1 = ImageIO.read(getClass().getResourceAsStream("/Enemy Sprites/Goblin Sprites/Goblin_Idle_1.png"));
             idle2 = ImageIO.read(getClass().getResourceAsStream("/Enemy Sprites/Goblin Sprites/Goblin_Idle_2.png"));
@@ -45,6 +46,7 @@ public class Goblin extends Entity {
     public void update(int backgroundX, int tileSize) {
         int newX = moveCamera(backgroundX);
 
+        // Changes speed and direction based on relation to player position
         if (!Objects.equals(getState(), "dead") && (newX < getP().getX() + tileSize * 4)) {
             if (newX < getP().getX() - tileSize * 0.6) {
                 setxSpeed(3);
@@ -61,6 +63,7 @@ public class Goblin extends Entity {
             setxSpeed(0);
         }
 
+        // Updates state if monster has no more health
         if (getCurrHealth() == 0) {
             setState("dead");
         }
